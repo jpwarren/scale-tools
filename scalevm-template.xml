@@ -1,0 +1,49 @@
+<domain type="kvm">
+  <name>${vm_name}</name>
+  <description>${vm_descr}</description>
+  <uuid>${vm_uuid}</uuid>
+  <memory unit="MiB">${vm_ram}</memory>
+  <vcpu placement="static">${vm_vcpu}</vcpu>
+  <cpu>
+    <topology sockets="1" cores="${vm_vcpu}" threads="1"/>
+  </cpu>
+  <os>
+    <type arch="x86_64">hvm</type>
+  </os>
+  <metadata>
+    <scale:os uuid="os_other"/>
+  </metadata>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <clock offset="utc">
+    <timer name="pit" tickpolicy="delay"/>
+    <timer name="rtc" tickpolicy="catchup"/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <emulator>/usr/libexec/qemu-kvm</emulator>
+    <input type="tablet" bus="usb"/>
+    <memballoon model="none"/>
+    <video>
+      <model type="vga"/>
+    </video>
+    <disk type="network" device="cdrom">
+      <boot order="2"/>
+      <driver name="qemu" type="scribe" cache="writethrough" io="native"/>
+      <readonly/>
+      <target dev="hda"/>
+    </disk>
+    <!-- Define the harddrives, which are qcow2 format files -->
+${qcow_disks}
+   
+${interfaces}
+
+    <graphics type="vnc" autoport="yes" keymap="en-us"/>
+  </devices>
+</domain>
+
